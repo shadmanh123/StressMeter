@@ -1,4 +1,4 @@
-package com.example.shadman_hossain_stressmeter.ui.gallery
+package com.example.shadman_hossain_stressmeter.ui.visualization
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.shadman_hossain_stressmeter.databinding.FragmentVisualizationBinding
 
-class GalleryFragment : Fragment() {
+class VisualizationFragment : Fragment() {
 
     private var _binding: FragmentVisualizationBinding? = null
 
@@ -22,14 +22,14 @@ class GalleryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val galleryViewModel =
-            ViewModelProvider(this).get(GalleryViewModel::class.java)
+        val visualizationViewModel =
+            ViewModelProvider(this).get(VisualizationViewModel::class.java)
 
         _binding = FragmentVisualizationBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val textView: TextView = binding.textGallery
-        galleryViewModel.text.observe(viewLifecycleOwner) {
+        visualizationViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root

@@ -1,4 +1,4 @@
-package com.example.shadman_hossain_stressmeter.ui.home
+package com.example.shadman_hossain_stressmeter.ui.imageRequest
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,8 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.shadman_hossain_stressmeter.databinding.FragmentImageRequestBinding
 
-class HomeFragment : Fragment() {
+class ImageRequestFragment : Fragment() {
 
+//    private val imageResourceId = arrayOf(
+//        R.drawable.psm
+//    )
     private var _binding: FragmentImageRequestBinding? = null
 
     // This property is only valid between onCreateView and
@@ -22,16 +25,12 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
+        val imageRequestViewModel =
+            ViewModelProvider(this).get(ImageRequestViewModel::class.java)
 
         _binding = FragmentImageRequestBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
         return root
     }
 
