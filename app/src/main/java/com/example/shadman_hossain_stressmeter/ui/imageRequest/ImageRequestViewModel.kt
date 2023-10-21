@@ -5,9 +5,21 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class ImageRequestViewModel : ViewModel() {
+    private lateinit var currentSet: Set<Int>
+    private lateinit var updatedSet: MutableSet<Int>
+    private val _selectedImages = MutableLiveData<Set<Int>>()
+    val selectedImages: LiveData<Set<Int>> = _selectedImages
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
+    fun addSelectedImages(images: Set<Int>){
+        currentSet = _selectedImages.value?: setOf()
+        updatedSet = (currentSet + images).take(16).toMutableSet()
+        _selectedImages.value = updatedSet
     }
-    val text: LiveData<String> = _text
+    fun removeSelectedImages(imageResourceId: Int){
+        currentSet = _selectedImages.value?: setOf()
+        updatedSet = currentSet.toMutableSet()
+        updatedSet.remove(imageResourceId)
+        _selectedImages.value = updatedSet
+    }
+
 }
