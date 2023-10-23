@@ -2,6 +2,7 @@ package com.example.shadman_hossain_stressmeter.ui.visualization
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import lecho.lib.hellocharts.model.Axis
+import lecho.lib.hellocharts.model.AxisValue
 import lecho.lib.hellocharts.model.ChartData
 import lecho.lib.hellocharts.model.Line
 import lecho.lib.hellocharts.model.LineChartData
@@ -42,14 +44,14 @@ class VisualizationFragment : Fragment() {
     private lateinit var chart:LineChartView
     private lateinit var recyclerView: RecyclerView
     private lateinit var csvData: List<String>
-    private var values = ArrayList<PointValue>()
     private lateinit var line:Line
     private var lines = ArrayList<Line>()
     private lateinit var data: LineChartData
     private lateinit var axisX: Axis
     private lateinit var axisY:Axis
-    private var stressData = mutableListOf<StressData>()
+    private lateinit var values: ArrayList<PointValue>
     private val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+    private lateinit var axisValue: List<Int>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,12 +64,15 @@ class VisualizationFragment : Fragment() {
         _binding = FragmentVisualizationBinding.inflate(inflater, container, false)
         val root: View = binding.root
         chart = binding.root.findViewById<LineChartView>(R.id.resultsGraph)
-//        chart = LineChartView(requireContext())
+        chart.setInteractive(false)
         val csvAdapter = CSVAdapter(requireContext())
         recyclerView = binding.root.findViewById(R.id.resultsTable)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        CoroutineScope(Dispatchers.IO).launch {
+        val backgroundThread = Thread {
             csvData = csvAdapter.readDataFromCSVFile()
+            values = ArrayList<PointValue>()
+            var stressData = mutableListOf<StressData>()
+            var instance : Int = 0
             for (data in csvData){
                 var parts = data.split(",")
                 if(parts.size == 2){
@@ -75,34 +80,42 @@ class VisualizationFragment : Fragment() {
                     var timeInFloat = parts[1].toFloat()
                     var timeInLong = timeInFloat.toLong()
                     var timeStamp = simpleDateFormat.format(Date(timeInLong))
-                    values.add(PointValue(timeInFloat, score))
+                    values.add(PointValue(instance.toFloat(), score))
                     stressData.add(StressData(score,timeStamp))
+                    instance++
                 }
             }
-            visualizationViewModel.updateVisualizationData(values)
-            updateGraph(values)
-        }
-        val adapter = RecyclerViewCustomAdapter(stressData)
-        recyclerView.adapter = adapter
+            activity?.runOnUiThread{
+                visualizationViewModel.updateVisualizationData(values)
+                axisX = Axis()
+                axisX.name = "Instance"
+                axisX.textColor = R.color.Isabelline
+                axisY = Axis()
+                axisY.name =  "Stress Level"
+                axisY.textColor = R.color.Isabelline
+                var count = 0
+                axisY.setValues(
+                    listOf( AxisValue(1f), AxisValue(2f), AxisValue(3f),
+                        AxisValue(4f), AxisValue(5f), AxisValue(6f),
+                        AxisValue(7f), AxisValue(8f), AxisValue(9f),
+                        AxisValue(10f), AxisValue(11f), AxisValue(12f),
+                        AxisValue(13f), AxisValue(14f), AxisValue(15f),
+                        AxisValue(16f)
+                    )
+                )
+                val adapter = RecyclerViewCustomAdapter(stressData)
+                recyclerView.adapter = adapter
+                updateGraph(values)
+            }
 
-        line = Line(values).setColor(Color.BLACK).setCubic(true)
-        lines.add(line)
-        data = LineChartData()
-        axisX = Axis()
-        axisX.name = "Time"
-        axisY = Axis()
-        axisY.name =  "Stress Level"
-        data.axisXBottom = axisX
-        data.axisYLeft = axisY
-        data.setLines(lines)
-        chart.setLineChartData(data)
+        }
+        backgroundThread.start()
+
         return root
     }
 
-    private fun updateGraph(updateData: List<PointValue>){
-        values.clear()
-        values.addAll(updateData)
-        val updatedLine = Line(values).setColor(Color.BLUE).setCubic(true)
+    private fun updateGraph(updateData: ArrayList<PointValue>){
+        val updatedLine = Line(updateData).setColor(Color.BLUE).setCubic(true)
         lines.clear()
         lines.add(updatedLine)
         val updatedData = LineChartData()

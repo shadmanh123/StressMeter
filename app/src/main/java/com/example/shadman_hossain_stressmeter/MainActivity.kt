@@ -1,6 +1,10 @@
 package com.example.shadman_hossain_stressmeter
 
+import android.media.MediaPlayer
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.view.Menu
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
@@ -17,10 +21,20 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    private lateinit var vibrator: Vibrator
+    private lateinit var mediaaPlayer: MediaPlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        vibrator = getSystemService(Vibrator::class.java)
+        if(vibrator.hasVibrator()){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val pattern = longArrayOf(0, 1000, 500, 1000, 500)
+                    vibrator.vibrate(VibrationEffect.createWaveform(pattern, -1))
+                }
+        }
+        mediaaPlayer = MediaPlayer.create(this, R.raw.app_sound)
+        mediaaPlayer.start()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

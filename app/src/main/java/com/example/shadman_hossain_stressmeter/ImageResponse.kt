@@ -38,7 +38,7 @@ class ImageResponse: AppCompatActivity() {
             }
             CoroutineScope(Dispatchers.Main).launch {
                 coroutine.join()
-                finish()
+                finishAffinity()
             }
 
         }

@@ -1,7 +1,6 @@
 package com.example.shadman_hossain_stressmeter.ui.imageRequest
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -45,9 +44,8 @@ class ImageAdapter(private val context: Context, private var grid: List<Int>,
         return gridScores[position]
     }
 
-    fun getDrawableName(grid: List<Int>, position: Int): String{
+    fun getDrawableName(grid: List<Int>, position: Int): String {
         val imageResourceID = grid[position]
-        val name = context.resources.getResourceName(imageResourceID)
-        return name
+        return context.resources.getResourceName(imageResourceID)
     }
 }

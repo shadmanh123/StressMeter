@@ -14,7 +14,7 @@ class CSVAdapter(context: Context) {
         outputStream.write("\n".toByteArray()) // Add a newline for the next entry
         outputStream.close()
     }
-    suspend fun readDataFromCSVFile():List<String>{
+    fun readDataFromCSVFile():List<String>{
         val data = mutableListOf<String>()
         val file = File(context.filesDir, "your_results.csv")
         if (file.exists()) {
