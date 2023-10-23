@@ -1,14 +1,14 @@
 package com.example.shadman_hossain_stressmeter
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.shadman_hossain_stressmeter.ui.imageRequest.ImageAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class imageResponse: AppCompatActivity() {
+class ImageResponse: AppCompatActivity() {
     private lateinit var imageView: ImageView
     private lateinit var cancelButton: Button
     private lateinit var submitButton: Button
@@ -33,7 +33,14 @@ class imageResponse: AppCompatActivity() {
         submitButton.setOnClickListener(){
             var timeStamp = System.currentTimeMillis()
             var csvData = "$score, $timeStamp"
-            csvAdapter.writeDataToCsvFile(csvData)
+            var coroutine = CoroutineScope(Dispatchers.IO).launch {
+                csvAdapter.writeDataToCsvFile(csvData)
+            }
+            CoroutineScope(Dispatchers.Main).launch {
+                coroutine.join()
+                finish()
+            }
+
         }
 
     }

@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.shadman_hossain_stressmeter.R
 import com.example.shadman_hossain_stressmeter.databinding.FragmentImageRequestBinding
-import com.example.shadman_hossain_stressmeter.imageResponse
+import com.example.shadman_hossain_stressmeter.ImageResponse
 
 class ImageRequestFragment : Fragment() {
     private lateinit var moreImagesButton: Button
@@ -84,7 +84,7 @@ class ImageRequestFragment : Fragment() {
         gridView.setOnItemClickListener { _, view, position, _ ->
             val score = imageAdapter.getScore(position)
             val drawableName = imageAdapter.getDrawableName(gridSelectionAsList, position)!!
-            intent = Intent(requireContext(), imageResponse::class.java)
+            intent = Intent(requireContext(), ImageResponse::class.java)
             intent.putExtra("drawableName", drawableName)
             intent.putExtra("score", score)
             startActivity(intent)
