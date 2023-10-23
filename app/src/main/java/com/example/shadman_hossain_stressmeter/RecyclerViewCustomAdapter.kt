@@ -1,6 +1,5 @@
 package com.example.shadman_hossain_stressmeter
 
-import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +23,7 @@ class RecyclerViewCustomAdapter(private val dataSet: List<StressData>):
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = dataSet[position]
             holder.textViewScore.text = item.score.toString()
-            holder.textViewTimestamp.text = item.timestamp.toString()
+            holder.textViewTimestamp.text = item.timestamp
     }
 
     override fun getItemCount(): Int {

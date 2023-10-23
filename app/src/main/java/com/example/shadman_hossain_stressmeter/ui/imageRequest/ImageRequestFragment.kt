@@ -55,8 +55,8 @@ class ImageRequestFragment : Fragment() {
             R.drawable.psm_wine3, R.drawable.psm_work4, R.drawable.psm_yoga4)
 
         val gridScores = listOf(6,8,14,16,5,7,13,15,2,4,10,12,1,3,9,11)
-        gridSelection = firstGrid.toMutableSet()
-        gridSelectionAsList = firstGrid
+        gridSelection = firstGrid.toMutableSet() //first time app opens, this first grid is chosen
+        gridSelectionAsList = firstGrid //grid selection as list is needed to determine name of drawable
         moreImagesButton = binding.root.findViewById(R.id.moreImagesButton)
         imageAdapter = ImageAdapter(requireContext(),firstGrid, gridScores)
         moreImagesButton.setOnClickListener {

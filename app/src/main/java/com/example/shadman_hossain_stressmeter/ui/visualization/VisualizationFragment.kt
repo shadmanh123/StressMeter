@@ -2,34 +2,23 @@ package com.example.shadman_hossain_stressmeter.ui.visualization
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TableLayout
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shadman_hossain_stressmeter.CSVAdapter
-import com.example.shadman_hossain_stressmeter.ImageResponse
 import com.example.shadman_hossain_stressmeter.R
 import com.example.shadman_hossain_stressmeter.RecyclerViewCustomAdapter
 import com.example.shadman_hossain_stressmeter.StressData
 import com.example.shadman_hossain_stressmeter.databinding.FragmentVisualizationBinding
-import com.google.android.material.color.utilities.Score
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import lecho.lib.hellocharts.model.Axis
 import lecho.lib.hellocharts.model.AxisValue
-import lecho.lib.hellocharts.model.ChartData
 import lecho.lib.hellocharts.model.Line
 import lecho.lib.hellocharts.model.LineChartData
 import lecho.lib.hellocharts.model.PointValue
-import lecho.lib.hellocharts.view.Chart
 import lecho.lib.hellocharts.view.LineChartView
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -44,14 +33,11 @@ class VisualizationFragment : Fragment() {
     private lateinit var chart:LineChartView
     private lateinit var recyclerView: RecyclerView
     private lateinit var csvData: List<String>
-    private lateinit var line:Line
     private var lines = ArrayList<Line>()
-    private lateinit var data: LineChartData
     private lateinit var axisX: Axis
     private lateinit var axisY:Axis
     private lateinit var values: ArrayList<PointValue>
     private val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
-    private lateinit var axisValue: List<Int>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,20 +54,21 @@ class VisualizationFragment : Fragment() {
         val csvAdapter = CSVAdapter(requireContext())
         recyclerView = binding.root.findViewById(R.id.resultsTable)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        //Going to read file on thread and create the graph
         val backgroundThread = Thread {
             csvData = csvAdapter.readDataFromCSVFile()
             values = ArrayList<PointValue>()
-            var stressData = mutableListOf<StressData>()
-            var instance : Int = 0
+            val stressData = mutableListOf<StressData>()
+            var instance = 0
             for (data in csvData){
-                var parts = data.split(",")
+                val parts = data.split(",") //data looks like {score, time}
                 if(parts.size == 2){
-                    var score = parts[0].toFloat()
-                    var timeInFloat = parts[1].toFloat()
-                    var timeInLong = timeInFloat.toLong()
-                    var timeStamp = simpleDateFormat.format(Date(timeInLong))
-                    values.add(PointValue(instance.toFloat(), score))
-                    stressData.add(StressData(score,timeStamp))
+                    val score = parts[0].toFloat()
+                    val timeInFloat = parts[1].toFloat()
+                    val timeInLong = timeInFloat.toLong()
+                    val timeStamp = simpleDateFormat.format(Date(timeInLong))
+                    values.add(PointValue(instance.toFloat(), score)) //values is for graph
+                    stressData.add(StressData(score,timeStamp)) //stress data is for the table
                     instance++
                 }
             }
@@ -93,7 +80,6 @@ class VisualizationFragment : Fragment() {
                 axisY = Axis()
                 axisY.name =  "Stress Level"
                 axisY.textColor = R.color.Isabelline
-                var count = 0
                 axisY.setValues(
                     listOf( AxisValue(1f), AxisValue(2f), AxisValue(3f),
                         AxisValue(4f), AxisValue(5f), AxisValue(6f),

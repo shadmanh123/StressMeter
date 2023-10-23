@@ -1,13 +1,12 @@
 package com.example.shadman_hossain_stressmeter
 
 import android.content.Context
-import android.util.Log
 import java.io.BufferedReader
 import java.io.File
 
 class CSVAdapter(context: Context) {
     private val context:Context = context
-    suspend fun writeDataToCsvFile(csvData: String) {
+    fun writeDataToCsvFile(csvData: String) {
         val filename = "your_results.csv"
         val outputStream = context.openFileOutput(filename, Context.MODE_APPEND)
         outputStream.write(csvData.toByteArray())

@@ -12,7 +12,7 @@ class ImageResponse: AppCompatActivity() {
     private lateinit var imageView: ImageView
     private lateinit var cancelButton: Button
     private lateinit var submitButton: Button
-    val csvAdapter = CSVAdapter(this)
+    private val csvAdapter = CSVAdapter(this)
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.image_response)
@@ -27,13 +27,13 @@ class ImageResponse: AppCompatActivity() {
                 imageView.setImageResource(imageResouceID)
             }
         }
-        cancelButton.setOnClickListener(){
+        cancelButton.setOnClickListener {
             finish()
         }
-        submitButton.setOnClickListener(){
-            var timeStamp = System.currentTimeMillis()
-            var csvData = "$score, $timeStamp"
-            var coroutine = CoroutineScope(Dispatchers.IO).launch {
+        submitButton.setOnClickListener {
+            val timeStamp = System.currentTimeMillis()
+            val csvData = "$score, $timeStamp"
+            val coroutine = CoroutineScope(Dispatchers.IO).launch {
                 csvAdapter.writeDataToCsvFile(csvData)
             }
             CoroutineScope(Dispatchers.Main).launch {
