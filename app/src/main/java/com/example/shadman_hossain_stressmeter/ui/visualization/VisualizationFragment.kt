@@ -10,9 +10,13 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.shadman_hossain_stressmeter.CSVAdapter
 import com.example.shadman_hossain_stressmeter.ImageResponse
 import com.example.shadman_hossain_stressmeter.R
+import com.example.shadman_hossain_stressmeter.RecyclerViewCustomAdapter
+import com.example.shadman_hossain_stressmeter.StressData
 import com.example.shadman_hossain_stressmeter.databinding.FragmentVisualizationBinding
 import com.google.android.material.color.utilities.Score
 import kotlinx.coroutines.CoroutineScope
@@ -25,6 +29,9 @@ import lecho.lib.hellocharts.model.LineChartData
 import lecho.lib.hellocharts.model.PointValue
 import lecho.lib.hellocharts.view.Chart
 import lecho.lib.hellocharts.view.LineChartView
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class VisualizationFragment : Fragment() {
 
@@ -33,7 +40,7 @@ class VisualizationFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var chart:LineChartView
-    private lateinit var tableLayout: TableLayout
+    private lateinit var recyclerView: RecyclerView
     private lateinit var csvData: List<String>
     private var values = ArrayList<PointValue>()
     private lateinit var line:Line
@@ -41,6 +48,9 @@ class VisualizationFragment : Fragment() {
     private lateinit var data: LineChartData
     private lateinit var axisX: Axis
     private lateinit var axisY:Axis
+    private var stressData = mutableListOf<StressData>()
+    private val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -54,22 +64,28 @@ class VisualizationFragment : Fragment() {
         chart = binding.root.findViewById<LineChartView>(R.id.resultsGraph)
 //        chart = LineChartView(requireContext())
         val csvAdapter = CSVAdapter(requireContext())
-        tableLayout = binding.root.findViewById(R.id.resultsTable)
+        recyclerView = binding.root.findViewById(R.id.resultsTable)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
         CoroutineScope(Dispatchers.IO).launch {
             csvData = csvAdapter.readDataFromCSVFile()
             for (data in csvData){
                 var parts = data.split(",")
                 if(parts.size == 2){
                     var score = parts[0].toFloat()
-                    var time = parts[1].toFloat()
-                    values.add(PointValue(time, score))
+                    var timeInFloat = parts[1].toFloat()
+                    var timeInLong = timeInFloat.toLong()
+                    var timeStamp = simpleDateFormat.format(Date(timeInLong))
+                    values.add(PointValue(timeInFloat, score))
+                    stressData.add(StressData(score,timeStamp))
                 }
             }
             visualizationViewModel.updateVisualizationData(values)
             updateGraph(values)
         }
+        val adapter = RecyclerViewCustomAdapter(stressData)
+        recyclerView.adapter = adapter
 
-        line = Line(values).setColor(Color.BLUE).setCubic(true)
+        line = Line(values).setColor(Color.BLACK).setCubic(true)
         lines.add(line)
         data = LineChartData()
         axisX = Axis()
