@@ -12,8 +12,9 @@
         android:id="@+id/instructionTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/tap_the_image_that_best_captures_how_stressed_you_feel_right_now"
+        android:layout_marginTop="32dp"
         android:gravity="center"
+        android:text="@string/tap_the_image_that_best_captures_how_stressed_you_feel_right_now"
         android:textColor="@color/black"
         android:textSize="25sp"
         />
@@ -22,16 +23,14 @@
         android:id="@+id/imageGridView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:numColumns="4" />
+        android:layout_marginTop="24dp"
+        android:numColumns="4"
+        />
 
     <Button
         android:id="@+id/moreImagesButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         android:backgroundTint="@color/Isabelline"
         android:text="@string/more_images"
         android:textColor="@color/black"

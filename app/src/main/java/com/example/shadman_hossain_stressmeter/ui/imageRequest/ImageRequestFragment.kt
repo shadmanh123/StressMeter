@@ -1,26 +1,25 @@
 package com.example.shadman_hossain_stressmeter.ui.imageRequest
 
-import android.graphics.drawable.Drawable
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.GridView
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.shadman_hossain_stressmeter.R
 import com.example.shadman_hossain_stressmeter.databinding.FragmentImageRequestBinding
+import com.example.shadman_hossain_stressmeter.imageResponse
 
 class ImageRequestFragment : Fragment() {
-    private lateinit var imageResourceId:Array<Int>
     private lateinit var moreImagesButton: Button
+    private lateinit var intent: Intent
     private var count = 0
-    private var initialSelection: MutableSet<Int> = mutableSetOf()
+    private var gridSelection: MutableSet<Int> = mutableSetOf()
+    private lateinit var gridSelectionAsList: List<Int>
     private var _binding: FragmentImageRequestBinding? = null
-    private val TAG = "ImageRequestFragment"
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -36,7 +35,7 @@ class ImageRequestFragment : Fragment() {
             ViewModelProvider(this).get(ImageRequestViewModel::class.java)
         _binding = FragmentImageRequestBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        val firstGrid = listOf<Int>(R.drawable.psm_alarm_clock, R.drawable.psm_headache2,
+        val firstGrid = listOf<Int>(R.drawable.psm_alarm_clock,R.drawable.psm_headache2,
             R.drawable.psm_angry_face, R.drawable.psm_anxious, R.drawable.psm_baby_sleeping, R.drawable.psm_bar,
             R.drawable.psm_barbed_wire2, R.drawable.psm_beach3,R.drawable.psm_bird3,R.drawable.psm_blue_drop,
             R.drawable.psm_cat,R.drawable.psm_clutter,R.drawable.psm_neutral_person2,R.drawable.psm_dog_sleeping,
@@ -55,29 +54,41 @@ class ImageRequestFragment : Fragment() {
             R.drawable.psm_talking_on_phone2, R.drawable.psm_puppy3,R.drawable.psm_to_do_list3,
             R.drawable.psm_wine3, R.drawable.psm_work4, R.drawable.psm_yoga4)
 
-        initialSelection = firstGrid.toMutableSet()
+        val gridScores = listOf<Int>(6,8,14,16,5,7,13,15,2,4,10,12,1,3,9,11)
+        gridSelection = firstGrid.toMutableSet()
+        gridSelectionAsList = firstGrid
         moreImagesButton = binding.root.findViewById(R.id.moreImagesButton)
-        imageAdapter = ImageAdapter(requireContext(),firstGrid)
-        imageAdapter = ImageAdapter(requireContext(),firstGrid)
+        imageAdapter = ImageAdapter(requireContext(),firstGrid, gridScores)
         moreImagesButton.setOnClickListener() {
             count++
             if (count == 0) {
-                initialSelection = firstGrid.toMutableSet()
+                gridSelection = firstGrid.toMutableSet()
+                gridSelectionAsList = firstGrid
                 imageAdapter.updateImages(firstGrid)
             }
             else if (count == 1){
-                initialSelection = secondGrid.toMutableSet()
+                gridSelection = secondGrid.toMutableSet()
+                gridSelectionAsList = secondGrid
                 imageAdapter.updateImages(secondGrid)
             }
             else{
-                initialSelection = thirdGrid.toMutableSet()
+                gridSelection = thirdGrid.toMutableSet()
+                gridSelectionAsList = thirdGrid
                 imageAdapter.updateImages(thirdGrid)
                 count = -1
             }
         }
-        imageRequestViewModel.addSelectedImages(initialSelection)
+        imageRequestViewModel.addSelectedImages(gridSelection)
         gridView = binding.imageGridView
         gridView.adapter = imageAdapter
+        gridView.setOnItemClickListener { _, view, position, _ ->
+            val score = imageAdapter.getScore(position)
+            val drawableName = imageAdapter.getDrawableName(gridSelectionAsList, position)!!
+            intent = Intent(requireContext(), imageResponse::class.java)
+            intent.putExtra("drawableName", drawableName)
+            intent.putExtra("score", score)
+            startActivity(intent)
+        }
         return root
     }
 

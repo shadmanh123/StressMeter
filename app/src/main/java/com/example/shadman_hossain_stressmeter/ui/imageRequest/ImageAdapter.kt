@@ -7,7 +7,8 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 
-class ImageAdapter(private val context: Context, private var grid: List<Int>): BaseAdapter() {
+class ImageAdapter(private val context: Context, private var grid: List<Int>,
+    private val gridScores: List<Int>): BaseAdapter() {
     override fun getCount(): Int {
         return grid.size
     }
@@ -23,13 +24,11 @@ class ImageAdapter(private val context: Context, private var grid: List<Int>): B
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val imageView:ImageView
         if(convertView == null){
-//            Log.d("ImageAdapter", "Creating a new ImageView for position $position")
             imageView = ImageView(context)
             imageView.layoutParams = ViewGroup.LayoutParams(250,250)
             imageView.scaleType = ImageView.ScaleType.CENTER_CROP
         }
         else{
-//            Log.d("ImageAdapter", "Reusing an existing ImageView for position $position")
             imageView = convertView as ImageView
         }
 
@@ -40,5 +39,15 @@ class ImageAdapter(private val context: Context, private var grid: List<Int>): B
     fun updateImages(newGrid: List<Int>){
         grid = newGrid
         notifyDataSetChanged()
+    }
+
+    fun getScore(position: Int): Int{
+        return gridScores[position]
+    }
+
+    fun getDrawableName(grid: List<Int>, position: Int): String{
+        val imageResourceID = grid[position]
+        val name = context.resources.getResourceName(imageResourceID)
+        return name
     }
 }

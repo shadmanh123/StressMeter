@@ -16,4 +16,6 @@
     <string name="tap_the_image_that_best_captures_how_stressed_you_feel_right_now">Tap the image that best captures how stressed you feel right now</string>
     <string name="cancel">Cancel</string>
     <string name="submit">Submit</string>
+    <string name="a_graph_showing_your_stress_levels">A graph showing your stress levels</string>
+    <string name="summary_of_results">Summary of Results</string>
 </resources>

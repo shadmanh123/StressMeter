@@ -7,16 +7,45 @@
     tools:context=".ui.visualization.VisualizationFragment">
 
     <TextView
-        android:id="@+id/text_gallery"
+        android:id="@+id/graphText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:text="@string/a_graph_showing_your_stress_levels"
         android:textAlignment="center"
         android:textSize="20sp"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <lecho.lib.hellocharts.view.LineChartView
+        android:id="@+id/resultsGraph"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/graphText" />
+
+    <TableLayout
+        android:id="@+id/resultsTable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tableText" />
+
+    <TextView
+        android:id="@+id/tableText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="@string/summary_of_results"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/resultsGraph" />
 </androidx.constraintlayout.widget.ConstraintLayout>
